@@ -576,25 +576,27 @@ function alpha.start(on_vimenter, conf)
     -- when the screen is cleared and then redrawn
     -- so we save the index before that happens
     local ix = cursor_ix
-    vim.api.nvim_buf_set_option(state.buffer, "modifiable", true)
-    vim.api.nvim_buf_set_lines(state.buffer, 0, -1, false, {})
-    layout(conf, state)
-    vim.api.nvim_buf_set_option(state.buffer, "modifiable", false)
-    vim.api.nvim_buf_set_keymap(
-      state.buffer,
-      "n",
-      "<CR>",
-      "<cmd>lua require('alpha').press()<CR>",
-      { noremap = false, silent = true }
-    )
-    vim.api.nvim_buf_set_keymap(
-      state.buffer,
-      "n",
-      "<M-CR>",
-      "<cmd>lua require('alpha').queue_press()<CR>",
-      { noremap = false, silent = true }
-    )
-    vim.api.nvim_win_set_cursor(state.window, cursor_jumps[ix])
+    if vim.api.nvim_buf_is_valid(state.buffer) then
+      vim.api.nvim_buf_set_option(state.buffer, "modifiable", true)
+      vim.api.nvim_buf_set_lines(state.buffer, 0, -1, false, {})
+      layout(conf, state)
+      vim.api.nvim_buf_set_option(state.buffer, "modifiable", false)
+      vim.api.nvim_buf_set_keymap(
+        state.buffer,
+        "n",
+        "<CR>",
+        "<cmd>lua require('alpha').press()<CR>",
+        { noremap = false, silent = true }
+      )
+      vim.api.nvim_buf_set_keymap(
+        state.buffer,
+        "n",
+        "<M-CR>",
+        "<cmd>lua require('alpha').queue_press()<CR>",
+        { noremap = false, silent = true }
+      )
+      vim.api.nvim_win_set_cursor(state.window, cursor_jumps[ix])
+    end
   end
 
   alpha.redraw = draw
